@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import datetime, date
 import csv
 import pandas as pd
 
@@ -15,7 +15,9 @@ def ingresar_ventas():
             cantidad = int(input("Ingrese la cantidad vendida: "))
             precio = float(input("Ingrese el precio unitario: "))
             if fecha == "" or cliente == "":
-                fecha = date.strptime(input("Ingrese la fecha de la venta (YYYY-MM-DD): "), "%Y-%m-%d")
+                fecha = datetime.strptime(
+                    input("Ingrese la fecha de la venta (YYYY-MM-DD): "), "%Y-%m-%d"
+                ).date()
                 cliente = input("Ingrese el nombre del cliente: ")
 
             # Validaciones de datos
@@ -49,9 +51,9 @@ def ingresar_ventas():
             print(f"Cliente: {Ventas[0]['Cliente']} | Fecha: {Ventas[0]['Fecha']} ")
             for venta in Ventas:
                 # Imprime los detalles de cada venta ingresada en un sola linea con formato de ticket
-                print("-" * 30)
+                print("-" * 100)
                 print(
-                    f"Producto: {venta['Producto']} | Cantidad: {venta['Cantidad']} | Precio: ${venta['Precio']:.2f}"
+                    f"Producto: {venta['Producto']} | Cantidad: {venta['Cantidad']} | Precio: ${venta['Precio']:.2f} | Subtotal: ${venta['Cantidad'] * venta['Precio']:.2f}"
                 )
             subtotal = sum(
                 v["Cantidad"] * v["Precio"] for v in Ventas
@@ -95,7 +97,7 @@ def cargar_ventas(archivo_csv="ventas.csv"):
         return ventas
     except FileNotFoundError:
         print(f"❌ El archivo {archivo_csv} no se encontró.")
-        return []
+        return None
     except Exception as e:
         print(f"Error al cargar las ventas desde el archivo CSV: {e}")
         return None
